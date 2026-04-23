@@ -1,3 +1,6 @@
+/**
+ * Middleware to protect routes and keep user sessions active.
+ */
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
@@ -33,24 +36,23 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  // refreshing the auth token
+  // Refreshing the auth token
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Protected routes logic
+  // Define which pages are for authentication (login/signup)
   const isAuthPage = request.nextUrl.pathname.startsWith('/login') ||
                      request.nextUrl.pathname.startsWith('/signup') ||
                      request.nextUrl.pathname.startsWith('/auth')
 
-  // Public routes that don't require authentication
+  // Define public pages that anyone can see
   const isPublicRoute =
     request.nextUrl.pathname === '/' ||
     request.nextUrl.pathname === '/admin' ||
     request.nextUrl.pathname.startsWith('/api') ||
     request.nextUrl.pathname.startsWith('/_next') ||
-    // Allow unauthenticated access to public profiles (/[username])
-    // Profiles are any top-level route that isn't reserved
     (!request.nextUrl.pathname.includes('.') && request.nextUrl.pathname.split('/').length === 2)
 
+  // If there's no user and they're trying to visit a private page, send them to login
   if (!user && !isAuthPage && !isPublicRoute) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'

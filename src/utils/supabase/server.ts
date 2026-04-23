@@ -1,3 +1,7 @@
+/**
+ * Server-side Supabase client.
+ * This handles authentication state using cookies.
+ */
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
@@ -27,7 +31,10 @@ export function createClient() {
   )
 }
 
-// Service role client for server-side writes (Rule 2)
+/**
+ * Service role client for server-side writes.
+ * Used for critical updates that bypass standard security (RLS).
+ */
 export function createAdminClient() {
   return createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
