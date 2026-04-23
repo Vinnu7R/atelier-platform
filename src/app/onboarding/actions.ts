@@ -1,6 +1,6 @@
 'use server'
 
-import { createClient } from '@/utils/supabase/server'
+import { createClient, createAdminClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 
 export async function updateProfile(formData: FormData) {
@@ -19,7 +19,10 @@ export async function updateProfile(formData: FormData) {
   const skillsStr = formData.get('skills') as string
   const skills = skillsStr ? skillsStr.split(',').map(s => s.trim()) : []
 
-  const { error } = await supabase
+  // Use Admin Client for writes (Rule 2)
+  const adminSupabase = createAdminClient()
+
+  const { error } = await adminSupabase
     .from('profiles')
     .upsert({
       user_id: user.id,

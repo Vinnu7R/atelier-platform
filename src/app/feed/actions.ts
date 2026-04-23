@@ -1,6 +1,6 @@
 'use server'
 
-import { createClient } from '@/utils/supabase/server'
+import { createClient, createAdminClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
 
 export async function createPost(formData: FormData) {
@@ -23,7 +23,10 @@ export async function createPost(formData: FormData) {
 
   const content = formData.get('content') as string
 
-  const { error } = await supabase
+  // Use Admin Client for writes (Rule 2)
+  const adminSupabase = createAdminClient()
+
+  const { error } = await adminSupabase
     .from('posts')
     .insert({
       author_id: profile.id,

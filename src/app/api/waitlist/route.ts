@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServiceClient } from "@/lib/supabase";
+import { createAdminClient } from "@/utils/supabase/server";
 
 export async function POST(req: NextRequest) {
   try {
@@ -9,14 +9,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid email" }, { status: 400 });
     }
 
-    const supabase = createServiceClient();
+    const supabase = createAdminClient();
 
     // Check for duplicate
     const { data: existing } = await supabase
       .from("waitlist")
       .select("id")
       .eq("email", email.toLowerCase().trim())
-
+      .maybeSingle();
 
     if (existing) {
       return NextResponse.json({ message: "Already on the list!", alreadyExists: true });
