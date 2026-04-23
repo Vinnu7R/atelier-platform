@@ -16,6 +16,7 @@ export default function AdminPage() {
   const [pw, setPw] = useState("");
   const [error, setError] = useState("");
 
+<<<<<<< feat-landing-waitlist-admin-13611724740468442413
   async function login() {
     setLoading(true);
     try {
@@ -36,11 +37,22 @@ export default function AdminPage() {
       setError("Login failed");
     } finally {
       setLoading(false);
+=======
+  const ADMIN_PW = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "atelier2025";
+
+  function login() {
+    if (pw === ADMIN_PW) {
+      setAuthed(true);
+      setError("");
+    } else {
+      setError("Wrong password");
+>>>>>>> main
     }
   }
 
   useEffect(() => {
     if (!authed) return;
+<<<<<<< feat-landing-waitlist-admin-13611724740468442413
     const interval = setInterval(async () => {
       try {
         const res = await fetch("/api/admin/waitlist", {
@@ -58,6 +70,18 @@ export default function AdminPage() {
     }, 30000);
     return () => clearInterval(interval);
   }, [authed, pw]);
+=======
+    async function fetchEntries() {
+      const { data, error } = await supabase
+        .from("waitlist")
+        .select("*")
+        .order("signed_up_at", { ascending: false });
+      if (!error && data) setEntries(data);
+      setLoading(false);
+    }
+    fetchEntries();
+  }, [authed]);
+>>>>>>> main
 
   function exportCSV() {
     const rows = [
