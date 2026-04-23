@@ -15,48 +15,13 @@ export default function AdminPage() {
   const [pw, setPw] = useState("");
   const [error, setError] = useState("");
 
-  async function login() {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/admin/waitlist", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password: pw }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setEntries(data);
-        setAuthed(true);
-        setError("");
-      } else {
-        setError("Wrong password");
-      }
-    } catch (err) {
-      setError("Login failed");
-    } finally {
-      setLoading(false);
+
     }
   }
 
   useEffect(() => {
     if (!authed) return;
-    const interval = setInterval(async () => {
-      try {
-        const res = await fetch("/api/admin/waitlist", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ password: pw }),
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setEntries(data);
-        }
-      } catch (err) {
-        console.error("Auto-refresh failed");
-      }
-    }, 30000);
-    return () => clearInterval(interval);
-  }, [authed, pw]);
+
 
   function exportCSV() {
     const rows = [

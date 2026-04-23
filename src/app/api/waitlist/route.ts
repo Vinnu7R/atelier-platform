@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
       .from("waitlist")
       .select("id")
       .eq("email", email.toLowerCase().trim())
-      .maybeSingle();
+
 
     if (existing) {
       return NextResponse.json({ message: "Already on the list!", alreadyExists: true });
