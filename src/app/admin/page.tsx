@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
 
 type WaitlistEntry = {
   id: string;
@@ -16,29 +15,13 @@ export default function AdminPage() {
   const [pw, setPw] = useState("");
   const [error, setError] = useState("");
 
-  const ADMIN_PW = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "atelier2025";
 
-  function login() {
-    if (pw === ADMIN_PW) {
-      setAuthed(true);
-      setError("");
-    } else {
-      setError("Wrong password");
     }
   }
 
   useEffect(() => {
     if (!authed) return;
-    async function fetchEntries() {
-      const { data, error } = await supabase
-        .from("waitlist")
-        .select("*")
-        .order("signed_up_at", { ascending: false });
-      if (!error && data) setEntries(data);
-      setLoading(false);
-    }
-    fetchEntries();
-  }, [authed]);
+
 
   function exportCSV() {
     const rows = [
@@ -57,49 +40,55 @@ export default function AdminPage() {
 
   if (!authed) {
     return (
-      <div style={{ minHeight: "100vh", background: "var(--paper)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ textAlign: "center", maxWidth: 360 }}>
-          <div style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 28, letterSpacing: "0.1em", marginBottom: 8 }}>ATELIER</div>
-          <div style={{ fontFamily: "'DM Mono',monospace", fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase", color: "var(--muted)", marginBottom: 40 }}>Admin Access</div>
-          <div style={{ display: "flex", border: "1px solid var(--ink)", overflow: "hidden" }}>
+      <div className="min-h-screen bg-paper flex items-center justify-center">
+        <div className="text-center w-full max-w-[360px] px-6">
+          <div className="font-syne font-extrabold text-3xl tracking-widest mb-2">ATELIER</div>
+          <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted mb-10">Admin Access</div>
+          <div className="flex border border-ink overflow-hidden">
             <input
               type="password"
               value={pw}
               onChange={e => setPw(e.target.value)}
               onKeyDown={e => e.key === "Enter" && login()}
               placeholder="Password"
-              style={{ flex: 1, padding: "12px 16px", background: "transparent", border: "none", outline: "none", fontFamily: "'DM Mono',monospace", fontSize: 13, color: "var(--ink)" }}
+              className="flex-1 px-4 py-3 bg-transparent border-none outline-none font-mono text-sm text-ink placeholder:opacity-50"
             />
-            <button onClick={login} style={{ padding: "12px 20px", background: "var(--ink)", color: "var(--paper)", border: "none", cursor: "pointer", fontFamily: "'Syne',sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+            <button
+              onClick={login}
+              className="px-5 py-3 bg-ink text-paper font-syne font-semibold text-[11px] tracking-widest uppercase transition-opacity hover:opacity-90 active:scale-95"
+            >
               Enter
             </button>
           </div>
-          {error && <div style={{ color: "var(--accent)", fontFamily: "'DM Mono',monospace", fontSize: 11, marginTop: 12 }}>{error}</div>}
+          {error && <div className="text-accent font-mono text-[11px] mt-3">{error}</div>}
         </div>
       </div>
     );
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--paper)", padding: "48px" }}>
+    <div className="min-h-screen bg-paper p-6 md:p-12">
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1px solid var(--rule)", paddingBottom: 24, marginBottom: 48 }}>
+      <div className="flex flex-col md:flex-row justify-between md:items-end border-b border-rule pb-6 mb-12 gap-4">
         <div>
-          <div style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 24, letterSpacing: "0.1em" }}>ATELIER</div>
-          <div style={{ fontFamily: "'DM Mono',monospace", fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase", color: "var(--muted)", marginTop: 4 }}>Waitlist Dashboard</div>
+          <div className="font-syne font-extrabold text-2xl tracking-widest">ATELIER</div>
+          <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted mt-1">Waitlist Dashboard</div>
         </div>
-        <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-          <div style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: "var(--muted)" }}>
+        <div className="flex gap-4 items-center">
+          <div className="font-mono text-[11px] text-muted">
             {entries.length} signups
           </div>
-          <button onClick={exportCSV} style={{ padding: "10px 20px", background: "transparent", border: "1px solid var(--ink)", cursor: "pointer", fontFamily: "'Syne',sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink)", transition: "all 0.2s" }}>
+          <button
+            onClick={exportCSV}
+            className="px-5 py-2.5 border border-ink font-syne font-semibold text-[11px] tracking-widest uppercase text-ink transition-all hover:bg-ink hover:text-paper active:scale-95"
+          >
             Export CSV
           </button>
         </div>
       </div>
 
       {/* Stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1, background: "var(--rule)", border: "1px solid var(--rule)", marginBottom: 48 }}>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-rule border border-rule mb-12 overflow-hidden shadow-sm">
         {[
           { num: entries.length, label: "Total signups" },
           { num: entries.filter(e => e.source === "landing").length, label: "From landing page" },
@@ -109,37 +98,39 @@ export default function AdminPage() {
             return d.toDateString() === now.toDateString();
           }).length, label: "Today" },
         ].map((s, i) => (
-          <div key={i} style={{ background: "var(--paper)", padding: "32px 36px" }}>
-            <div style={{ fontSize: 48, fontWeight: 300, letterSpacing: "-0.03em", lineHeight: 1, marginBottom: 8 }}>{s.num}</div>
-            <div style={{ fontFamily: "'DM Mono',monospace", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--muted)" }}>{s.label}</div>
+          <div key={i} className="bg-paper p-8">
+            <div className="text-5xl font-light tracking-tighter leading-none mb-2">{s.num}</div>
+            <div className="font-mono text-[10px] tracking-[0.15em] uppercase text-muted">{s.label}</div>
           </div>
         ))}
       </div>
 
       {/* Table */}
       {loading ? (
-        <div style={{ fontFamily: "'DM Mono',monospace", fontSize: 12, color: "var(--muted)", textAlign: "center", padding: 80 }}>Loading...</div>
+        <div className="font-mono text-xs text-muted text-center py-20 animate-pulse">Synchronizing database...</div>
       ) : (
-        <div style={{ border: "1px solid var(--rule)", overflow: "hidden" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 160px 200px", background: "var(--ink)", color: "var(--paper)", padding: "12px 24px" }}>
-            {["Email", "Source", "Signed Up"].map(h => (
-              <div key={h} style={{ fontFamily: "'DM Mono',monospace", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase" }}>{h}</div>
+        <div className="border border-rule overflow-x-auto shadow-sm">
+          <div className="min-w-[600px]">
+            <div className="grid grid-cols-[1fr_160px_200px] bg-ink text-paper px-6 py-3 font-mono text-[10px] tracking-widest uppercase">
+              <div>Email</div>
+              <div>Source</div>
+              <div>Signed Up</div>
+            </div>
+            {entries.length === 0 && (
+              <div className="py-20 text-center font-mono text-xs text-muted bg-paper">
+                No signups yet. Share the landing page!
+              </div>
+            )}
+            {entries.map((e, i) => (
+              <div key={e.id} className={`grid grid-cols-[1fr_160px_200px] px-6 py-4 border-t border-rule transition-colors hover:bg-warm/50 ${i % 2 === 0 ? "bg-paper" : "bg-warm/30"}`}>
+                <div className="text-base font-light truncate pr-4">{e.email}</div>
+                <div className="font-mono text-[10px] text-accent tracking-widest uppercase pt-1">{e.source}</div>
+                <div className="font-mono text-[11px] text-muted">
+                  {new Date(e.signed_up_at).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
+                </div>
+              </div>
             ))}
           </div>
-          {entries.length === 0 && (
-            <div style={{ padding: "48px 24px", textAlign: "center", fontFamily: "'DM Mono',monospace", fontSize: 12, color: "var(--muted)" }}>
-              No signups yet. Share the landing page!
-            </div>
-          )}
-          {entries.map((e, i) => (
-            <div key={e.id} style={{ display: "grid", gridTemplateColumns: "1fr 160px 200px", padding: "16px 24px", borderTop: "1px solid var(--rule)", background: i % 2 === 0 ? "var(--paper)" : "var(--warm)", transition: "background 0.2s" }}>
-              <div style={{ fontSize: 16, fontWeight: 300 }}>{e.email}</div>
-              <div style={{ fontFamily: "'DM Mono',monospace", fontSize: 10, color: "var(--accent)", letterSpacing: "0.08em", textTransform: "uppercase", paddingTop: 4 }}>{e.source}</div>
-              <div style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: "var(--muted)" }}>
-                {new Date(e.signed_up_at).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
-              </div>
-            </div>
-          ))}
         </div>
       )}
     </div>
