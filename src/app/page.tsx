@@ -46,7 +46,6 @@ export default function Home() {
   return (
     <>
       <style>{`
-
         body { cursor: none; background: var(--paper); }
         .cursor { position:fixed;width:8px;height:8px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.15s; }
         .cursor-ring { position:fixed;width:36px;height:36px;border:1px solid var(--accent);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:0.5;transition:opacity 0.3s; }
@@ -118,7 +117,13 @@ export default function Home() {
 
         {/* HERO RIGHT */}
         <div style={{ position:"relative",background:"var(--warm)",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center" }}>
-
+          <div style={{ position:"absolute",inset:0,backgroundImage:"linear-gradient(var(--rule) 1px,transparent 1px),linear-gradient(90deg,var(--rule) 1px,transparent 1px)",backgroundSize:"48px 48px" }} />
+          <svg style={{ position:"absolute",inset:0,width:"100%",height:"100%",opacity:0.15,pointerEvents:"none" }} viewBox="0 0 600 700" fill="none">
+            <path d="M160 200 C 280 280, 320 380, 450 320" stroke="var(--ink)" strokeWidth="1" strokeDasharray="4 6"/>
+            <path d="M160 200 C 200 350, 180 500, 200 540" stroke="var(--ink)" strokeWidth="1" strokeDasharray="4 6"/>
+            <path d="M450 320 C 420 430, 380 500, 430 560" stroke="var(--ink)" strokeWidth="1" strokeDasharray="4 6"/>
+            <circle cx="160" cy="200" r="4" fill="var(--accent)"/><circle cx="450" cy="320" r="4" fill="var(--accent)"/>
+            <circle cx="200" cy="540" r="4" fill="var(--accent2)"/><circle cx="430" cy="560" r="4" fill="var(--accent2)"/>
           </svg>
           {[
             { cls:"card-a", style:{top:"18%",left:"8%"}, role:"Product Designer", name:"Meera Krishnan", work:"Currently: Redesigning onboarding for a fintech startup", tags:["Systems","Motion","Figma"] },
@@ -143,7 +148,8 @@ export default function Home() {
       <div style={{ borderTop:"1px solid var(--rule)",borderBottom:"1px solid var(--rule)",padding:"14px 0",overflow:"hidden",background:"var(--ink)" }}>
         <div style={{ display:"flex",whiteSpace:"nowrap",animation:"marquee 28s linear infinite" }}>
           {Array(2).fill(["Work-based identity","Process-first culture","AI-powered matching","Community over clout","Show your work","Build in public","Find your collaborators"]).flat().map((item,i)=>(
-
+            <span key={i} style={{ fontFamily:"'DM Mono',monospace",fontSize:11,letterSpacing:"0.12em",textTransform:"uppercase",padding:"0 40px",color:"var(--paper)",opacity:0.7 }}>
+              <span style={{ color:"var(--accent)",marginRight:40 }}>✦</span>{item}
             </span>
           ))}
         </div>
@@ -172,7 +178,7 @@ export default function Home() {
             { icon:"↗",label:"Grow through community",h:"Learn by watching others work",body:"The feed isn't about finished things. It's about the messy middle — decisions made, paths abandoned, breakthroughs shared. A culture of genuine craft." },
           ].map((s,i)=>(
             <div key={i} className="step reveal" style={{ background:"var(--paper)",padding:"48px 36px",position:"relative",overflow:"hidden",transition:"background 0.3s" }}>
-
+              <div style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:96,fontWeight:300,color:"var(--ink)",opacity:0.05,position:"absolute",top:-16,right:16,lineHeight:1,pointerEvents:"none" }}>{i+1}</div>
               <div style={{ fontSize:28,marginBottom:20 }}>{s.icon}</div>
               <div style={{ fontFamily:"'DM Mono',monospace",fontSize:10,letterSpacing:"0.18em",textTransform:"uppercase",color:"var(--accent)",marginBottom:12 }}>{s.label}</div>
               <h3 style={{ fontSize:26,fontWeight:400,lineHeight:1.2,marginBottom:16 }}>{s.h}</h3>
@@ -186,7 +192,9 @@ export default function Home() {
       <div id="values" style={{ background:"var(--ink)",color:"var(--paper)",padding:"100px 48px",textAlign:"center",position:"relative",overflow:"hidden" }}>
         <div style={{ position:"absolute",inset:0,background:"radial-gradient(ellipse at 50% 0%,rgba(200,80,42,0.15),transparent 70%)" }} />
         <div className="reveal" style={{ fontSize:"clamp(28px,4vw,60px)",fontWeight:300,lineHeight:1.3,letterSpacing:"-0.01em",maxWidth:900,margin:"0 auto",position:"relative" }}>
-
+          "Most platforms ask you what you've <em style={{ fontStyle:"italic",color:"var(--accent)" }}>done.</em> We ask what you're <em style={{ fontStyle:"italic",color:"var(--accent)" }}>doing</em> — and who you're becoming in the process."
+        </div>
+        <div className="reveal" style={{ fontFamily:"'DM Mono',monospace",fontSize:11,letterSpacing:"0.15em",textTransform:"uppercase",color:"var(--paper)",opacity:0.4,marginTop:40 }}>— The Atelier Manifesto</div>
       </div>
 
       {/* FOOTER CTA */}

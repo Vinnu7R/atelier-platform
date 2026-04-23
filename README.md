@@ -42,6 +42,42 @@ alter table waitlist enable row level security;
 -- Allow server-side inserts (service role bypasses RLS)
 create policy "Service role can insert" on waitlist
   for insert with check (true);
+
+-- Profiles table
+create table profiles (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users(id) on delete cascade unique not null,
+  username text unique not null,
+  display_name text,
+  role text,
+  current_work text,
+  skills text[],
+  location text,
+  avatar_url text,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+-- Posts table
+create table posts (
+  id uuid default gen_random_uuid() primary key,
+  author_id uuid references profiles(id) on delete cascade not null,
+  content text not null,
+  type text default 'text', -- 'text', 'image', 'link'
+  created_at timestamptz default now()
+);
+
+-- RLS for Profiles
+alter table profiles enable row level security;
+create policy "Public profiles are viewable by everyone" on profiles for select using (true);
+create policy "Users can insert their own profile" on profiles for insert with check (auth.uid() = user_id);
+create policy "Users can update own profile" on profiles for update using (auth.uid() = user_id);
+
+-- RLS for Posts
+alter table posts enable row level security;
+create policy "Posts are viewable by everyone" on posts for select using (true);
+create policy "Authenticated users can create posts" on posts for insert with check (auth.uid() in (select user_id from profiles where id = author_id));
+create policy "Users can delete own posts" on posts for delete using (auth.uid() in (select user_id from profiles where id = author_id));
 ```
 
 ### 4. Run locally
