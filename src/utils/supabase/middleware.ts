@@ -39,18 +39,21 @@ export async function updateSession(request: NextRequest) {
   // Refreshing the auth token
   const { data: { user } } = await supabase.auth.getUser()
 
+  const { pathname } = request.nextUrl
+
   // Define which pages are for authentication (login/signup)
-  const isAuthPage = request.nextUrl.pathname.startsWith('/login') ||
-                     request.nextUrl.pathname.startsWith('/signup') ||
-                     request.nextUrl.pathname.startsWith('/auth')
+  const isAuthPage = pathname.startsWith('/login') ||
+                     pathname.startsWith('/signup') ||
+                     pathname.startsWith('/auth')
 
   // Define public pages that anyone can see
   const isPublicRoute =
-    request.nextUrl.pathname === '/' ||
-    request.nextUrl.pathname === '/admin' ||
-    request.nextUrl.pathname.startsWith('/api') ||
-    request.nextUrl.pathname.startsWith('/_next') ||
-    (!request.nextUrl.pathname.includes('.') && request.nextUrl.pathname.split('/').length === 2)
+    pathname === '/' ||
+    pathname === '/admin' ||
+    pathname.startsWith('/api') ||
+    pathname.startsWith('/_next') ||
+    // Allow unauthenticated access to public profiles (/profile/[username])
+    pathname.startsWith('/profile/')
 
   // If there's no user and they're trying to visit a private page, send them to login
   if (!user && !isAuthPage && !isPublicRoute) {

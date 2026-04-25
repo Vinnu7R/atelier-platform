@@ -45,5 +45,5 @@ export async function createPost(formData: FormData) {
 
   // Refresh the data on the feed and profile pages
   revalidatePath('/feed')
-  revalidatePath(`/${profile.username}`)
+  revalidatePath(`/profile/${profile.username}`)
 }
