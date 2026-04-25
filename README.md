@@ -112,7 +112,7 @@ Open [http://localhost:3000](http://localhost:3000)
 - [x] Phase 1 — Landing page + waitlist
 - [x] Phase 2 — Supabase integration (emails saved to DB)
 - [x] Phase 3 — Admin dashboard
-- [ ] Phase 4 — Auth + creator profiles
+- [x] Phase 4 — Auth + creator profiles + Feed
 - [ ] Phase 5 — AI matching engine
 
 ---
